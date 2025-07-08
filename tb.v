@@ -32,9 +32,11 @@ maquina_maluca dut (
 
     initial begin
  
-        rst_n = 0; start = 0; #20;
-        rst_n = 1;         #20;
-
+        rst_n = 0; 
+        start = 0; 
+        #5;
+        rst_n = 1;         
+        #2;
         start = 1;
 
         estado[0] = LIGAR_MAQUINA;
@@ -53,11 +55,13 @@ maquina_maluca dut (
             @(posedge clk);   
             #1;             
             if(state === estado[i])
-                $display("OK   : Estado %0d ok (%0d)", i, state);
+            begin
+                $display("OK   : estado[%0d] -> state[%0d]", i, state);
+            end
             else
-                $display("ERRO : Estado %0d, recebido %0d", estado[i], state);
-            if(i == 0) 
-                start = 0;
+            begin
+                $display("ERRO : estado[%0d] -> state[%0d]", estado[i], state);
+            end
         end
 
         $finish;

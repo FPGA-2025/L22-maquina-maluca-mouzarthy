@@ -1,11 +1,11 @@
-OK   : Estado 0 ok (2)
-OK   : Estado 1 ok (3)
-OK   : Estado 2 ok (4)
-OK   : Estado 3 ok (3)
-OK   : Estado 4 ok (5)
-OK   : Estado 5 ok (6)
-OK   : Estado 6 ok (7)
-OK   : Estado 7 ok (8)
-OK   : Estado 8 ok (9)
-OK   : Estado 9 ok (1)
-tb.v:64: $finish called at 136000 (1ps)
+OK   : estado[0] -> state[2]
+OK   : estado[1] -> state[3]
+OK   : estado[2] -> state[4]
+OK   : estado[3] -> state[3]
+OK   : estado[4] -> state[5]
+OK   : estado[5] -> state[6]
+OK   : estado[6] -> state[7]
+OK   : estado[7] -> state[8]
+OK   : estado[8] -> state[9]
+OK   : estado[9] -> state[1]
+tb.v:67: $finish called at 106000 (1ps)
