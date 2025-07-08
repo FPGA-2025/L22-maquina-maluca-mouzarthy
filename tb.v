@@ -15,12 +15,8 @@ maquina_maluca dut (
 );
 
 
-// Clock
     always #5 clk = ~clk;
 
-    // Sequência esperada de estados:
-    // IDLE -> LIGAR_MAQUINA -> VERIFICAR_AGUA -> ENCHER_RESERVATORIO -> VERIFICAR_AGUA
-    // -> MOER_CAFE -> COLOCAR_NO_FILTRO -> PASSAR_AGITADOR -> TAMPEAR -> REALIZAR_EXTRACAO -> IDLE
     reg [3:0] expected_states[0:10];
     integer i;
     reg erro_detectado;
@@ -44,26 +40,24 @@ maquina_maluca dut (
         expected_states[9]  = 4'd9; // REALIZAR_EXTRACAO
         expected_states[10] = 4'd1; // IDLE
 
-        // Aplica reset
         #12 rst_n = 1;
 
-        // Aguarda estado IDLE inicial
         wait (state == 4'd1);
 
-        // Envia start
         #10 start = 1;
         #10 start = 0;
 
-        // Verifica a sequência de estados esperados
-        for (i = 1; i <= 10; i = i + 1) begin
-            wait (state == expected_states[i]);
-            if (state !== expected_states[i]) begin
+        for (i = 1; i <= 10; i = i + 1) 
+        begin
+            wait(state == expected_states[i]);
+
+            if(state !== expected_states[i]) 
+            begin
                 erro_detectado = 1;
             end
-            @(posedge clk); // espera estabilização
+            @(posedge clk); 
         end
 
-        // Resultado
         if (erro_detectado)
             $display("ERRO");
         else
