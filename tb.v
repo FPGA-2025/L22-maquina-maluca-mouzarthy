@@ -14,54 +14,51 @@ maquina_maluca dut (
     .state (state)
 );
 
+    initial clk = 0;
+    always  #5  clk = ~clk;
 
-    always #5 clk = ~clk;
+    localparam  IDLE                = 4'd1,
+                LIGAR_MAQUINA       = 4'd2,
+                VERIFICAR_AGUA      = 4'd3,
+                ENCHER_RESERVATORIO = 4'd4,
+                MOER_CAFE           = 4'd5,
+                COLOCAR_NO_FILTRO   = 4'd6,
+                PASSAR_AGITADOR     = 4'd7,
+                TAMPEAR             = 4'd8,
+                REALIZAR_EXTRACAO   = 4'd9;
 
-    reg [3:0] expected_states[0:10];
-    integer i;
-    reg erro_detectado;
+    reg [3:0] estado [0:9];
+    integer   i;
 
     initial begin
+ 
+        rst_n = 0; start = 0; #20;
+        rst_n = 1;         #20;
 
-        clk     = 0;
-        rst_n   = 0;
-        start   = 0;
-        erro_detectado = 0;
+        start = 1;
 
-        expected_states[0]  = 4'd1; // IDLE
-        expected_states[1]  = 4'd2; // LIGAR_MAQUINA
-        expected_states[2]  = 4'd3; // VERIFICAR_AGUA
-        expected_states[3]  = 4'd4; // ENCHER_RESERVATORIO
-        expected_states[4]  = 4'd3; // VERIFICAR_AGUA
-        expected_states[5]  = 4'd5; // MOER_CAFE
-        expected_states[6]  = 4'd6; // COLOCAR_NO_FILTRO
-        expected_states[7]  = 4'd7; // PASSAR_AGITADOR
-        expected_states[8]  = 4'd8; // TAMPEAR
-        expected_states[9]  = 4'd9; // REALIZAR_EXTRACAO
-        expected_states[10] = 4'd1; // IDLE
+        estado[0] = LIGAR_MAQUINA;
+        estado[1] = VERIFICAR_AGUA;
+        estado[2] = ENCHER_RESERVATORIO;
+        estado[3] = VERIFICAR_AGUA;
+        estado[4] = MOER_CAFE;
+        estado[5] = COLOCAR_NO_FILTRO;
+        estado[6] = PASSAR_AGITADOR;
+        estado[7] = TAMPEAR;
+        estado[8] = REALIZAR_EXTRACAO;
+        estado[9] = IDLE;
 
-        #12 rst_n = 1;
-
-        wait (state == 4'd1);
-
-        #10 start = 1;
-        #10 start = 0;
-
-        for (i = 1; i <= 10; i = i + 1) 
+        for(i = 0; i < 10; i = i + 1) 
         begin
-            wait(state == expected_states[i]);
-
-            if(state !== expected_states[i]) 
-            begin
-                erro_detectado = 1;
-            end
-            @(posedge clk); 
+            @(posedge clk);   
+            #1;             
+            if(state === estado[i])
+                $display("OK   : Estado %0d ok (%0d)", i, state);
+            else
+                $display("ERRO : Estado %0d, recebido %0d", estado[i], state);
+            if(i == 0) 
+                start = 0;
         end
-
-        if (erro_detectado)
-            $display("ERRO");
-        else
-            $display("OK");
 
         $finish;
     end
